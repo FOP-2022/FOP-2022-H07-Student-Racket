@@ -59,17 +59,26 @@
                              ( traits2-pred tr )
                               lst ) ) ) ) ) )
                           
-    ;; Type: (X X -> Y) (list of X) -> (list of Y)
-    ;; Returns: a list as such that element i of the resulting list is 
-    ;;   f applied to the i-th and (i+1)-th element
-    ( define ( over-adjacent f lst )
-        ( cond [(empty? lst ) empty]
-            [( empty? ( rest lst ) ) empty]
-            [else ( cons ( f ( first lst ) ( second lst ) ) ( over-adjacent ( rest lst ) f ) )] ) )
-    ;; Type: (X X -> Y) (list of X) -> (list of Y)
-    ;; Returns: a list as such that element i of the resulting list is 
-    ;;   f applied to the i-th and (i+1)-th element
-    ( define ( over-adjacent2 f lst )
-        ( cond [( empty? lst ) empty]
-             ; map used with a function of arity two and two input lists
-             [else ( map f ( reverse ( rest ( reverse lst ) ) ) ( rest lst ) )] ) ) 
+;; Type: (X X -> Y) (list of X) -> (list of Y)
+;; Returns: a list as such that element i of the resulting list is 
+;;   f applied to the i-th and (i+1)-th element
+( define ( over-adjacent f lst )
+   ( cond [(empty? lst ) empty]
+          [( empty? ( rest lst ) ) empty]
+          [else ( cons ( f ( first lst ) ( second lst ) ) ( over-adjacent f ( rest lst )) )] ) )
+;; Type: (X X -> Y) (list of X) -> (list of Y)
+;; Returns: a list as such that element i of the resulting list is 
+;;   f applied to the i-th and (i+1)-th element
+( define ( over-adjacent2 f lst )
+   ( cond [( empty? lst ) empty]
+          ; map used with a function of arity two and two input lists
+          [else ( map f ( reverse ( rest ( reverse lst ) ) ) ( rest lst ) )] ) )
+
+; An example usage
+((create-function-with-adjacent ( make-traits2
+       ( lambda ( x y ) ( + x y 1 ) )
+       0
+       ( lambda ( x ) ( * x x ) )
+       ( lambda ( x ) ( > x 0 ) )
+       ( lambda ( x y ) ( * x y ) )
+       ) ) (list -2 -1 0 1 2 3 4 5))
